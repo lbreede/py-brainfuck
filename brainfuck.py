@@ -1,19 +1,20 @@
-def increment_val(array, ptr):
+def increment_val(array: list[int], ptr: int) -> None:
     array[ptr] = min(array[ptr] + 1, 255)
 
-def decrement_val(array, ptr):
+def decrement_val(array: list[int], ptr: int) -> None:
     array[ptr] = max(array[ptr] - 1, 0)
 
-def loop_end(array, ptr, start, i):
+def loop_end(array: list[int], ptr: int, start: list[int], i: int) -> int:
     if array[ptr] == 0:
-        return -1, i
-    return start, start
+        start.pop()
+        return i
+    return start[-1]
 
-def unfuck(cmd, array_length=4):
+def unfuck(cmd: str, array_length: int = 4) -> str:
     i = 0
     ptr = 0
     array = [0] * array_length
-    start = None
+    start = []
     output = ""
 
     while i < len(cmd):
@@ -22,8 +23,8 @@ def unfuck(cmd, array_length=4):
             case "<": ptr -= 1
             case "+": increment_val(array, ptr)
             case "-": decrement_val(array, ptr)
-            case "[": start = i
-            case "]": start, i = loop_end(array, ptr, start, i)
+            case "[": start.append(i)
+            case "]": i = loop_end(array, ptr, start, i)
             case ".": output += str(chr(array[ptr]))
             case ",": pass
             case _: pass
@@ -36,7 +37,7 @@ def main():
     with open("hello_world.bf") as f:
         brainfuck = f.read()
 
-    output = unfuck(brainfuck)
+    output = unfuck(brainfuck, array_length=8)
     print(output)
 
 if __name__ == '__main__':
